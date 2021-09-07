@@ -10,14 +10,14 @@ async def send_email_to_all_from_db():
     db = await aiosqlite.connect('contacts.db')
     cursor = await db.execute('SELECT email FROM contacts')
     rows = await cursor.fetchall()  # как надо сделать
-    rows = ["apodisation13@gmail.com"] * 10  # тест отправить себе 10 раз
+    # rows = ["apodisation13@gmail.com"] * 10  # тест отправить себе 10 раз
     tasks = []
     for mail in rows:
-        task = asyncio.create_task(send_message(mail))  # mail[0] - там кортежи (elem,)
+        task = asyncio.create_task(send_message(mail[0]))  # mail[0] - там кортежи (elem,)
         tasks.append(task)
     await asyncio.gather(*tasks)
-    # await cursor.close()
-    # await db.close()
+    await cursor.close()
+    await db.close()
 
 
 if __name__ == '__main__':
